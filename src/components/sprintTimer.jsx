@@ -51,15 +51,6 @@ export function SprintTimer({
     sprintDuration,
   ]);
 
-  useEffect(() => {
-    if (isBreak && player.target.pauseVideo) {
-        player.target.pauseVideo()
-    } else {
-        if(player && player.target.playVideo){
-            player.target.playVideo()
-        }
-    }
-  }, [isBreak, player]);
 
   return (
     <div>
