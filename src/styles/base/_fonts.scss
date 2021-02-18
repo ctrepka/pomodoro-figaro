@@ -1,0 +1,36 @@
+@import 'colors.scss';
+
+
+$jumbo: calc(12vw + 32px);
+$xxl: calc(6vw + 28px);
+$xl: calc(4vw + 24px);
+$lg: calc(2vw + 20px);
+$md: calc(1.5vw + 16px);
+$sm: calc(1vw + 16px);
+$xs: calc(.75vw + 16px);
+
+h1,h2,h3,h4,h5,h6 {
+    margin: 0;
+    color: $contrast;
+}
+.font-jumbo {
+    font-size: $jumbo;
+}
+.font-xxl {
+    font-size: $xxl;
+}
+.font-xl {
+    font-size: $xl;
+}
+.font-lg {
+    font-size: $lg;
+}
+.font-md {
+    font-size: $md;
+}
+.font-sm {
+    font-size: $sm; 
+}
+.font-xs {
+    font-size: $xs;
+}

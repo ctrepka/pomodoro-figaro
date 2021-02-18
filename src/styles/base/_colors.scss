@@ -1,0 +1,30 @@
+//theme colors
+$background: rgb(236, 245, 244);
+$contrast: #333;
+$shadow: rgb(221, 235, 233);
+
+//expressive colors
+$action: hsl(221, 66%, 51%);
+$success:  hsl(155, 99%, 37%);
+$warning: hsl(39, 66%, 51%);
+$failure: hsl(2, 66%, 51%);
+
+.bg-action {
+    background: $action;
+}
+.bg-success {
+    background: $success;
+}
+.bg-warning {
+    background: $warning;
+}
+.bg-failure {
+    background: $failure;
+}
+
+:export {
+    action: $action;
+    success: $success;
+    warning: $warning;
+    failure: $failure;
+}

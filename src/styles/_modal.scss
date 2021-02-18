@@ -1,0 +1,23 @@
+.modal {
+  top: 0;
+  border: solid 1px lightblue;
+  position: absolute;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  .modal-controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    border-bottom: solid 1px $shadow;
+    padding: 0.25rem 0rem;
+  }
+  &.display-true {
+    display: flex;
+    flex-direction: column;
+  }
+  &.display-false {
+    display: none;
+  }
+}

@@ -1,47 +1,32 @@
-import { Button, Input, InputNumber } from "antd";
+import { useState } from "react";
+import { useRecoilState } from "recoil";
+import { configAtom } from "../atoms";
 
-export function SprintConfigForm() {
+export function SprintConfigForm({ onSave, defaults }) {
+  const [config, setConfig] = useRecoilState(configAtom);
+  const [form, setForm] = useState({ ...config });
+
   return (
-    <>
-      <Input.Group>
-        <h1>Pomodoro Config</h1>
-        <Input.Group style={{ padding: "0.5rem 0rem" }}>
-          <Input placeholder="Task name" style={{ width: "60%" }} />
-          <InputNumber
-            defaultValue={1}
-            placeholder="# Long cycles"
-            style={{ width: "40%" }}
-          />
-        </Input.Group>
-        <h3>Sprint details</h3>
-        <Input.Group compact>
-          <InputNumber
-            defaultValue={60 * 25}
-            placeholder="Sprint duration"
-            style={{ width: "50%" }}
-          />
-          <InputNumber
-            defaultValue={60 * 5}
-            placeholder="Sprint break duration"
-            style={{ width: "50%" }}
-          />
-        </Input.Group>
-        <h3>Long cycle details</h3>
-        <Input.Group compact style={{ padding: "0.5rem 0rem" }}>
-          <InputNumber
-            defaultValue={4}
-            placeholder="Sprints in long cycle"
-            style={{ width: "50%" }}
-          />
-          <InputNumber
-            defaultValue={60 * 15 /*seconds * minutes*/}
-            placeholder="Long cycle break duration"
-            style={{ width: "50%" }}
-          />
-        </Input.Group>
-      </Input.Group>
+    <div style={{ maxWidth: "600px" }}>
+      {Object.entries(form).map((v, i) => (
+        <div key={v[0] + i}>
+          <label htmlFor={v[0]}>{v[0]}</label>
+          <input
+            value={v[1]}
+            id={v[0]}
+            onChange={(e) =>
+              setForm((form) => {
+                return { ...form, [v[0]]: Number(e.target.value) };
+              })
+            }
+          ></input>
+        </div>
+      ))}
+
       <br />
-      <Button type="primary">Start</Button>
-    </>
+      <button className="bg-success" onClick={() => setConfig(form)}>
+        Save<span className="icon">&#10003;</span>
+      </button>
+    </div>
   );
 }

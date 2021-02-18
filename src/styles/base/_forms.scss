@@ -1,0 +1,9 @@
+@import 'colors.scss';
+
+input {
+    padding: .5rem .75rem;
+    margin-bottom: .25rem;
+    margin-top: .25rem;
+    border: solid 1px $shadow;
+    border-radius: .25rem;
+}

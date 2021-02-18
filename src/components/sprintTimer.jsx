@@ -1,75 +1,88 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { configAtom, sprintDerivedState, sprintState } from "../atoms";
+import styles from "../styles/base/_colors.scss";
+import { secondsToHHMMSS } from "../utilities/time";
 
-export function SprintTimer({
-  sprintDuration,
-  sprintsPerCycle,
-  sprintBreakDuration,
-  longBreakDuration,
-  cycles,
-  player,
-}) {
-  const [isBreak, setIsBreak] = useState(false);
-  const [play, setPlay] = useState(true);
-  const [sprintsRemaining, setSprintsRemaining] = useState(
-    sprintsPerCycle * cycles
-  );
-  const [time, setTime] = useState(sprintDuration);
+export function SprintTimer() {
+  const [config, setConfig] = useRecoilState(configAtom);
+  const [state, setState] = useRecoilState(sprintState);
+  const {
+    clockTime,
+    sprintsInCycleRemaining,
+    totalSprintsRemaining,
+    cyclesCompleted,
+  } = useRecoilValue(sprintDerivedState);
+  const playPauseRef = useRef();
 
   useEffect(() => {
-    //if play is true and time remaining is > 0, remove 1 second
-    if (play && time > 0) {
-      const timer = setTimeout(() => {
-        setTime((time) => time - 1);
+    if (
+      state.timeType === "work" &&
+      state.elapsedTime >= config.sprintDuration
+    ) {
+      setState((state) => {
+        return {
+          ...state,
+          timeType: "break",
+          elapsedTime: 0,
+          sprintCount: state.sprintCount + 1,
+        };
+      });
+    }
+    if (
+      state.timeType === "break" &&
+      state.elapsedTime >= config.sprintBreakDuration
+    ) {
+      setState((state) => {
+        return { ...state, timeType: "work", elapsedTime: 0 };
+      });
+    }
+  }, [state, config, setState]);
+
+  useEffect(() => {
+    if (!state.paused) {
+      const timeout = setTimeout(() => {
+        setState((state) => {
+          return { ...state, elapsedTime: state.elapsedTime + 1 };
+        });
       }, 1000);
-      return () => clearTimeout(timer);
+
+      return () => clearTimeout(timeout);
     }
-  }, [setTime, play, time]);
+  }, [setState, state]);
 
   useEffect(() => {
-    //if time is 0 && isBreak === false, set isBreak to true and setTime to sprintBreakDuration
-    if (time === 0 && !isBreak) {
-      setIsBreak(true);
-      setTime(sprintBreakDuration);
-      setSprintsRemaining((sprintsRemaining) => sprintsRemaining - 1);
-      //beep();
-    }
-
-    //if time is 0 && isBreak === true && sprintsRemaining > 0, setTime to sprintDuration and set isBreak to False
-    if (time === 0 && isBreak && sprintsRemaining > 0) {
-      setIsBreak(false);
-      setTime(sprintDuration);
-      //beep();
-    }
-  }, [
-    isBreak,
-    setIsBreak,
-    setTime,
-    time,
-    sprintBreakDuration,
-    sprintsRemaining,
-    setSprintsRemaining,
-    sprintDuration,
-  ]);
-
+    playPauseRef.current.dispatchEvent(
+      new KeyboardEvent("keypress", { key: "Enter" })
+    );
+  }, []);
 
   return (
-    <div>
-      <h1 style={{ color: isBreak ? "green" : "orange" }}>
-        {isBreak ? "Break Time! Take a rest, pal!" : "Get working, punk."}
-      </h1>
-      <h2>{time}</h2>
-      <button onClick={() => setPlay((play) => !play)}>
-        {play ? "pause" : "resume"}
+    <div className="timer-container">
+      <h2
+        className="font-xl"
+        style={{
+          color: state.timeType === "work" ? styles.success : styles.warning,
+        }}
+      >
+        {state.timeType === "break"
+          ? "Break Time! Take a rest, pal!"
+          : "Get working, punk."}
+      </h2>
+      <h1 className={`font-jumbo`}>{secondsToHHMMSS(Number(clockTime))}</h1>
+      <button
+        ref={playPauseRef}
+        onClick={() =>
+          setState((state) => {
+            return { ...state, paused: !state.paused };
+          })
+        }
+      >
+        {state.paused ? "start" : "pause"}
       </button>
-      <p>
-        {Math.floor(
-          (sprintsPerCycle * cycles - sprintsRemaining) / sprintsPerCycle
-        )}
-        /{cycles} cycles completed | sprints left this cycle:{" "}
-        {sprintsRemaining % cycles} | total sprints remaining:{" "}
-        {sprintsRemaining}
-      </p>
-
+      <p>{sprintsInCycleRemaining} sprints to next long break</p>
+      <p>{totalSprintsRemaining} total sprints remaining</p>
+      <p>{cyclesCompleted} / {config.cycles} cycles completed</p>
     </div>
   );
 }

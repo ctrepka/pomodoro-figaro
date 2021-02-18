@@ -1,0 +1,46 @@
+@import "colors.scss";
+
+button {
+  padding: 0rem 1.5rem;
+  line-height: 2.5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  background: $action;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  font-weight: 500;
+
+  &:focus,
+  &::selection {
+    border: none;
+  }
+
+  &.fab {
+    margin: 0;
+    padding: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: solid 2px $shadow;
+    background: $shadow;
+    color: $contrast;
+    &:hover {
+      border: solid 1px $contrast;
+    }
+    span,
+    .icon {
+      color: $contrast;
+      height: 2rem;
+      width: 2rem;
+      font-size: 2rem;
+      line-height: 0;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}

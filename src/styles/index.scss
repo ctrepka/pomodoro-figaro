@@ -1,0 +1,10 @@
+//import custom scss library base
+@import './base/index.scss';
+
+//modular components
+@import 'modal.scss';
+@import 'sprintTimer.scss';
+
+*, html, body {
+    box-sizing:  border-box;
+}
